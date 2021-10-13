@@ -1,5 +1,6 @@
 const prompt = require("prompt-sync")({ signit: true });
 let time = 6;
+const chalk = require("chalk");
 
 let bucket = {
 	totalWeight: 0,
@@ -21,18 +22,30 @@ let fish = [
 ];
 
 console.log(
-	"\nYou've gone fishing! Try to maximize the value of your caught fish. You can fish for six hours (till 12:00pm) and can catch at most 10 lbs of fish."
+	chalk.black(
+		chalk.bgWhite(
+			"\nYou've gone fishing! Try to maximize the value of your caught fish. " +
+				chalk.red("You can fish for six hours till 12:00pm") +
+				" and can catch at most " +
+				chalk.red("10 lbs of fish.")
+		)
+	)
 );
 
 function getStatus() {
 	if (time < 12) {
-		console.log("The time is " + time + ":00am. So far you've caught: ");
 		console.log(
-			bucket["typeFish"].length +
+			"The time is " +
+				chalk.red(time) +
+				chalk.red(":00am") +
+				". So far you've caught: "
+		);
+		console.log(
+			chalk.green(bucket["typeFish"].length) +
 				" fish, " +
-				bucket["totalWeight"].toFixed(2) +
+				chalk.green(bucket["totalWeight"].toFixed(2)) +
 				" lbs, $" +
-				bucket["totalValue"].toFixed(2)
+				chalk.green(bucket["totalValue"].toFixed(2))
 		);
 	}
 }
@@ -43,16 +56,16 @@ function getCaughtFish() {
 	price = (wt * 2.05).toFixed(2);
 	console.log(
 		"\nYou caught a '" +
-			fish[randomFishy] +
+			chalk.greenBright(fish[randomFishy]) +
 			"' weighing " +
-			wt +
+			chalk.green(wt) +
 			" lbs and valued at $" +
-			price
+			chalk.green(price)
 	);
 }
 
 function catchTheFish() {
-	console.log("\nYou chose to keep the fish.");
+	console.log(chalk.green("\nYou chose to keep the fish."));
 	bucket["totalWeight"] += Number(wt);
 	bucket["totalValue"] += Number(price);
 	bucket["typeFish"].push({
@@ -63,13 +76,23 @@ function catchTheFish() {
 }
 
 function catchRelease() {
-	console.log("\nYour action: [c]atch or [r]elease?");
+	console.log(
+		"\nYour action: " +
+			chalk.green("[c]") +
+			"atch or " +
+			chalk.green("[r]") +
+			"elease?"
+	);
 	let choice = prompt("> ");
 
 	if (choice.toLowerCase() === "c") {
 		if ((bucket["totalWeight"] += wt > 10)) {
-			console.log("\nThis fish would put you over 10 lbs, so you release it.");
-			console.log("\nPress [enter] to continue.");
+			console.log(
+				"\nThis fish would put you " +
+					chalk.red("over 10 lbs") +
+					", so you release it."
+			);
+			console.log("\nPress " + chalk.green("[enter]") + " to continue.");
 			choice = prompt("> ");
 			time++;
 		} else {
@@ -77,7 +100,7 @@ function catchRelease() {
 			time++;
 		}
 	} else if (choice.toLowerCase() === "r") {
-		console.log("\nYou chose to release the fish.");
+		console.log(chalk.green("\nYou chose to release the fish."));
 		time++;
 	}
 }
@@ -86,11 +109,11 @@ function printCaughtFish() {
 	for (let i = 0; i < bucket["typeFish"].length; i++) {
 		console.log(
 			"* " +
-				bucket.typeFish[i].name +
+				chalk.greenBright(bucket.typeFish[i].name) +
 				", " +
-				bucket.typeFish[i].weight +
+				chalk.green(bucket.typeFish[i].weight) +
 				" lbs, $" +
-				bucket.typeFish[i].cash
+				chalk.green(bucket.typeFish[i].cash)
 		);
 	}
 }
@@ -105,10 +128,12 @@ while (time < 12 && bucket["totalWeight"] <= 10) {
 
 console.log("\n==============================================\n");
 
-console.log("The time is 12:00pm. Times up!\n");
+console.log("The time is " + chalk.red(time + ":00pm") + ". Times up!\n");
 
-console.log("You caught " + bucket["typeFish"].length + " fish:");
+console.log("You caught " + chalk.green(bucket["typeFish"].length) + " fish:");
 printCaughtFish();
 
-console.log("\nTotal weight: " + bucket["totalWeight"].toFixed(2));
-console.log("Total value: $" + bucket["totalValue"].toFixed(2));
+console.log(
+	"\nTotal weight: " + chalk.green(bucket["totalWeight"].toFixed(2)) + " lbs"
+);
+console.log("Total value: $" + chalk.green(bucket["totalValue"].toFixed(2)));
