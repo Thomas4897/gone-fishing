@@ -25,12 +25,7 @@ console.log(
 	"You've gone fishing! Try to maximize the value of your caught fish. You can fish for six hours (till 12:00pm) and can catch at most 10 lbs of fish."
 );
 
-function getBucket() {
-	bucket;
-}
-
-function getBucketWeight() {
-	let currentWeight = 0;
+function updateBucketWeight() {
 	currentWeight += bucket["totalWeight"];
 }
 
@@ -64,20 +59,36 @@ function getCaughtFish() {
 	);
 }
 
+function catchTheFish() {
+	console.log("\nYou chose to keep the fish.");
+	bucket["totalWeight"] += Number(wt);
+	currentWeight += Number(wt);
+	bucket["totalValue"] += Number(price);
+	bucket["typeFish"].push({
+		name: fish[randomFishy],
+		weight: wt,
+		cash: price,
+	});
+}
+
 function catchRelease() {
 	console.log("\nYour action: [c]atch or [r]elease?");
 	let choice = prompt("> ");
 
 	if (choice.toLowerCase() === "c") {
-		console.log("\nYou chose to keep the fish.");
-		bucket["totalWeight"] += Number(wt);
-		currentWeight += Number(wt);
-		bucket["totalValue"] += Number(price);
-		bucket["typeFish"].push({
-			name: fish[randomFishy],
-			weight: wt,
-			cash: price,
-		});
+		if ((bucket["totalWeight"] += wt > 10)) {
+			console.log("\nThis fish would put you over 10 lbs, so you release it.");
+			console.log("\nPress [y]es or [n]o then [enter] to continue.");
+			choice = prompt("> ");
+			if (choice.toLowerCase() === "y") {
+				catchTheFish();
+			} else {
+				console.log("\nYou chose to release the fish.");
+				time++;
+			}
+		} else {
+			catchTheFish();
+		}
 
 		time++;
 	} else if (choice.toLowerCase() === "r") {
@@ -99,10 +110,10 @@ function printCaughtFish() {
 	}
 }
 
-while (time < 12 || currentWeight <= 10) {
+while (time < 12 && currentWeight < 10) {
 	console.log("\n==============================================\n");
-	console.log(currentWeight);
-	getBucket();
+
+	updateBucketWeight();
 	getStatus();
 	getCaughtFish();
 	catchRelease();
