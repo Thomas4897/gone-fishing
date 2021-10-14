@@ -1,8 +1,14 @@
 const prompt = require("prompt-sync")({ signit: true });
+let randomHrs = Math.round(Math.random());
+let randomMins = Math.floor(Math.random() * (59 - 1 + 1) + 1);
+let hr = 6;
+let mins = 00;
+let clock = hr + ":" + (mins + randomMins);
 let time = 6;
 const chalk = require("chalk");
 
 let bucket = {
+	currentTime: 0,
 	totalWeight: 0,
 	totalValue: 0,
 	typeFish: [],
@@ -52,7 +58,7 @@ function getStatus() {
 
 function getCaughtFish() {
 	randomFishy = Math.floor(Math.random() * 10);
-	wt = (Math.random() * 10).toFixed(2);
+	wt = (Math.random() * (Math.random() * 9)).toFixed(2);
 	price = (wt * 2.05).toFixed(2);
 	console.log(
 		"\nYou caught a '" +
@@ -86,7 +92,7 @@ function catchRelease() {
 	let choice = prompt("> ");
 
 	if (choice.toLowerCase() === "c") {
-		if ((bucket["totalWeight"] += wt > 10)) {
+		if (Number(bucket["totalWeight"]) + Number(wt) > 10) {
 			console.log(
 				"\nThis fish would put you " +
 					chalk.red("over 10 lbs") +
@@ -94,15 +100,18 @@ function catchRelease() {
 			);
 			console.log("\nPress " + chalk.green("[enter]") + " to continue.");
 			choice = prompt("> ");
-			time++;
 		} else {
 			catchTheFish();
-			time++;
 		}
 	} else if (choice.toLowerCase() === "r") {
 		console.log(chalk.green("\nYou chose to release the fish."));
-		time++;
+	} else {
+		console.log(
+			chalk.green("\nYou chose niether [c] or [r] and the fish got away!.")
+		);
 	}
+
+	time++;
 }
 
 function printCaughtFish() {
