@@ -1,4 +1,8 @@
 const prompt = require("prompt-sync")({ signit: true });
+let wt;
+let price;
+let randomFishy;
+let caughtNothin;
 let randomHrs = Math.round(Math.random());
 let randomMins = Math.floor(Math.random() * (59 - 1 + 1) + 1);
 let hr = 6;
@@ -58,27 +62,36 @@ function getStatus() {
 
 function getCaughtFish() {
 	randomFishy = Math.floor(Math.random() * 10);
-	wt = (Math.random() * (Math.random() * 9)).toFixed(2);
-	price = (wt * 2.05).toFixed(2);
-	console.log(
-		"\nYou caught a '" +
-			chalk.greenBright(fish[randomFishy]) +
-			"' weighing " +
-			chalk.green(wt) +
-			" lbs and valued at $" +
-			chalk.green(price)
-	);
+	caughtNothin = Math.ceil(Math.random() * 10);
+
+	if (caughtNothin === 9) {
+		console.log(chalk.red("\nYou caught were not able to catch Anything!!"));
+	} else {
+		wt = (Math.random() * (Math.random() * 9)).toFixed(2);
+		price = (wt * 2.05).toFixed(2);
+		console.log(
+			"\nYou caught a '" +
+				chalk.greenBright(fish[randomFishy]) +
+				"' weighing " +
+				chalk.green(wt) +
+				" lbs and valued at $" +
+				chalk.green(price)
+		);
+	}
 }
 
 function catchTheFish() {
-	console.log(chalk.green("\nYou chose to keep the fish."));
-	bucket["totalWeight"] += Number(wt);
-	bucket["totalValue"] += Number(price);
-	bucket["typeFish"].push({
-		name: fish[randomFishy],
-		weight: wt,
-		cash: price,
-	});
+	if (caughtNothin === 9) {
+	} else {
+		console.log(chalk.green("\nYou chose to keep the fish."));
+		bucket["totalWeight"] += Number(wt);
+		bucket["totalValue"] += Number(price);
+		bucket["typeFish"].push({
+			name: fish[randomFishy],
+			weight: wt,
+			cash: price,
+		});
+	}
 }
 
 function catchRelease() {
